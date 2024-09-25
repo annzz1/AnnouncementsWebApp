@@ -7,7 +7,7 @@ public interface IAnnouncementService
 
     Task<IEnumerable<AnnouncementResponseDto>> GetAll(string? searchTitle);
 
-    Task<AnnouncementResponseDto> GetById(Guid id);
+    Task<AnnouncementDetailsResponseDto> GetById(Guid id);
 
     Task Update(Guid id, AnnouncementRequestDto announcement);
 

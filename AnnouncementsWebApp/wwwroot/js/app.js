@@ -9,7 +9,7 @@
     const announcementIdInput = document.getElementById("announcementId");
     let debounceTimeout;
 
-    // Fetch and display announcements
+    // ცხრილში მონაცემების გამოტანა
     async function fetchAnnouncements(searchTitle = "") {
         try {
             let url = `/api/announcements?searchTitle=${encodeURIComponent(searchTitle)}`;
@@ -31,16 +31,16 @@
                 let row = document.createElement("tr");
                 row.innerHTML = `
                     <td><img src="${announcement.image}" class="announcement-img" alt="${announcement.title}"></td>
-                    <td><a href="details.html?id=${announcement.id}">${announcement.title}</a></td>
-                    <td>
-                        <button class="editBtn" data-id="${announcement.id}">Edit</button>
+                    <td><a class = "title-link" href="details.html?id=${announcement.id}">${announcement.title}</a></td>
+                    <td class="actions-column">
+                         <button class="editBtn" data-id="${announcement.id}">Edit</button>
                         <button class="deleteBtn" data-id="${announcement.id}">Delete</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
 
-            // Attach events to edit and delete buttons
+            // ვამატებთ რედაქტირების და წაშლის ღილაკებს
             document.querySelectorAll(".editBtn").forEach(button => {
                 button.addEventListener("click", () => openEditForm(button.dataset.id));
             });
@@ -52,35 +52,37 @@
         }
     }
 
-    // Debounce function to limit API calls
+    // API-ს გამოძახების კონტროლი
     function debounce(func, delay) {
         return function () {
             const context = this;
             const args = arguments;
+            // შესაბამისი დროის გასვლის შემდეგ ახალი API ქოლი იგზავნება და წინა ტაიმერის თავიდანა ათვლა ხდება.
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => func.apply(context, args), delay);
         };
     }
 
-    // Dynamic search handler
+    // დინამიური ძებნის ფუნქცია
     searchInput.addEventListener("input", debounce(() => {
         const searchTitle = searchInput.value;
-        fetchAnnouncements(searchTitle);  // Fetch announcements as the user types
-    }, 300));  // Delay of 300ms
+        fetchAnnouncements(searchTitle);
+    }, 300));
 
-    // Add Announcement Modal
+    // განცხადების დამატების ღილაკზე დაჭერისას გამოდის ბლოკი მონაცემების შესატანად
     addAnnouncementBtn.addEventListener("click", () => {
         formTitle.textContent = "Add Announcement";
         modal.style.display = "block";
         announcementForm.reset();
     });
 
-    // Close Modal
+    // ვხურავთ ბლოკს მონაცემების შენახვის შემდეგ.
     closeModalBtn.addEventListener("click", () => {
         modal.style.display = "none";
     });
 
-    // Add or Update Announcement
+    // ფორმის შენახვის შემდეგ ღილაკის მიერ გამოძახებული ფუქნცია რომელიც მიღებული მონაცემების მიხედვით განასხვავებს http request-ს.
+    // ვიყენებთ try-catch ბლოკს შეცდომის დასაფიქსირებლად.
     announcementForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -100,13 +102,13 @@
             }
 
             modal.style.display = "none";
-            fetchAnnouncements();  // Refresh announcements after adding/updating
+            fetchAnnouncements();  // თავიდან ვიძახებთ რათა ცვლილება თუ დამატება აისახოს.
         } catch (error) {
             console.error("Error saving announcement:", error);
         }
     });
 
-    // Delete Announcement
+    // წაშლა განცხადების უნიკალური იდენტიფიკატორით, ვიყენებთ try-catch ბლოკს შეცდომის დასაფიქსირებლად.
     async function deleteAnnouncement(id) {
         try {
             let response = await fetch(`/api/announcements/${id}`, { method: "DELETE" });
@@ -114,13 +116,13 @@
                 throw new Error("Failed to delete announcement");
             }
 
-            fetchAnnouncements();  // Refresh announcements after deleting
+            fetchAnnouncements();  // // თავიდან ვიძახებთ რათა ცვლილება აისახოს
         } catch (error) {
             console.error("Error deleting announcement:", error);
         }
     }
 
-    // Open Edit Form
+    // ვხსნით რედაქტირების ფორმას და ვიღებთ ინფორმაციას
     async function openEditForm(id) {
         try {
             let response = await fetch(`/api/announcements/${id}`);
@@ -135,12 +137,15 @@
             document.getElementById("description").value = announcement.description;
             document.getElementById("phone").value = announcement.phone;
 
+            const fileInput = document.getElementById("image");
+            fileInput.value = "";
+
             modal.style.display = "block";
         } catch (error) {
             console.error("Error fetching announcement for edit:", error);
         }
     }
 
-    // Initial fetch to display all announcements
+    // ვიძახებთ თავდაპირველად ჩამონათვალს განცხადებების
     fetchAnnouncements();
 });

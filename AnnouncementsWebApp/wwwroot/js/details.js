@@ -5,7 +5,7 @@
     const announcementPhone = document.getElementById("announcementPhone");
     const backBtn = document.getElementById("backBtn");
 
-    // Get announcement ID from query string
+    // აიდის მნიშვნელობას ვიღებთ query string- იდან და ვინახავთთ ცვლადში.
     const urlParams = new URLSearchParams(window.location.search);
     const announcementId = urlParams.get("id");
 
@@ -14,7 +14,7 @@
         return;
     }
 
-    // Fetch Announcement Details
+    // დეტალებს ვიღებთ შესაბამისი კონტროლერის მეთოდის გამოძახებით, ვიყენებთ try-catch ბლოკს შეცდომების დასაფიქსირებლად.
     async function fetchAnnouncementDetails(id) {
         try {
             const response = await fetch(`/api/announcements/${id}`);
@@ -23,7 +23,7 @@
             }
 
             const announcement = await response.json();
-            // Populate the fields with announcement data
+            // ინფორმაციის მიღების შემდეგ ვინახავთ მონაცემებს
             announcementImage.src = announcement.image;
             announcementTitle.textContent = announcement.title;
             announcementDescription.textContent = announcement.description;
@@ -35,11 +35,11 @@
         }
     }
 
-    // Load the announcement details
+    // დეტალების გამოტანა
     fetchAnnouncementDetails(announcementId);
 
-    // Back button functionality
+    // მთავარ გვერდზე დაბრუნების ღილაკი
     backBtn.addEventListener("click", () => {
-        window.location.href = "homepage.html";
+        window.location.href = "index.html";
     });
 });

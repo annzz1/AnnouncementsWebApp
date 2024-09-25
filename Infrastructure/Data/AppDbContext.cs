@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
 
+/// <summary>
+/// არის application database context, რომლის საშუალებით ბაზასთან და მის ცხრილებთან ინტერაქციას და დაკავშირებას ვახერხებთ.
+/// </summary>
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Announcement> Announcements { get; set; }

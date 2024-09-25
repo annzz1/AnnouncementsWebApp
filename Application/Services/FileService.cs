@@ -4,8 +4,16 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Services;
 
+/// <summary>
+/// ფაილის სერვისი
+/// </summary>
 public class FileService : IFileService
 {
+    /// <summary>
+    /// შეინახავს ფაილს wwwroot/images დირექტორიაში
+    /// </summary>
+    /// <param name="image">ფაილი.</param>
+    /// <returns>ფაილის სახელი, თუ წარმატებით შეინახება დოკუმენტი; წინააღმდეგ შემთხვევაში, ცარიელი სტრინგი.</returns>
     public async Task<string> SaveFileToDirectory(IFormFile image)
     {
         if (image != null && image.Length > 0)
